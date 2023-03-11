@@ -75,6 +75,7 @@ class DependencyTreeResolver
                 $dependencies[] = [
                     'value' => $parameter->getDefaultValue(),
                 ];
+                continue;
             }
 
             $dependencies[] = [
