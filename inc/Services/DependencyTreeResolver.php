@@ -53,6 +53,7 @@ class DependencyTreeResolver
         if(is_null($constructor))
         {
             $this->provider->register_service($class);
+            return;
         }
 
         $parameters = $constructor->getParameters();
