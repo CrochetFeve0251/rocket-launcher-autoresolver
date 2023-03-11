@@ -4,6 +4,7 @@ namespace RocketLauncherAutoresolver\Services;
 
 use League\Container\Definition\DefinitionInterface;
 use ReflectionClass;
+use ReflectionException;
 use RocketLauncherAutoresolver\ServiceProvider;
 
 class DependencyTreeResolver
@@ -23,7 +24,7 @@ class DependencyTreeResolver
 
     /**
      * @param string[] $classes
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function resolve(array $classes) {
         foreach ($classes as $class) {
@@ -32,7 +33,7 @@ class DependencyTreeResolver
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected function resolve_class(string $class) {
 
