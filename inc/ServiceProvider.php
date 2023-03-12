@@ -31,7 +31,7 @@ class ServiceProvider extends AbstractServiceProvider
      */
     protected function get_root_classes(): array {
 
-        $roots = array_merge($this->get_init_subscribers(), $this->get_admin_subscribers(), $this->get_common_subscribers(), $this->get_front_subscribers(), $this->get_class_to_instantiate());
+        $roots = array_merge($this->get_init_subscribers(), $this->get_admin_subscribers(), $this->get_common_subscribers(), $this->get_front_subscribers(), $this->get_class_to_instantiate(), $this->get_class_to_expose());
 
         if($this instanceof HasActivatorServiceProviderInterface) {
             $roots = array_merge($roots, $this->get_activators());
@@ -42,6 +42,15 @@ class ServiceProvider extends AbstractServiceProvider
         }
 
         return $roots;
+    }
+
+    /**
+     * Get class that needs to be exposed.
+     *
+     * @return string[]
+     */
+    public function get_class_to_expose(): array {
+        return [];
     }
 
     /**
