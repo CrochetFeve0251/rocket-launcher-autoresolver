@@ -1,16 +1,25 @@
 <?php
 namespace RocketLauncherAutoresolver;
 
+use League\Container\Definition\DefinitionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use RocketLauncherAutoresolver\Services\DependencyTreeResolver;
 use RocketLauncherCore\Activation\HasActivatorServiceProviderInterface;
 use RocketLauncherCore\Container\AbstractServiceProvider;
 use RocketLauncherCore\Deactivation\HasDeactivatorServiceProviderInterface;
+use ReflectionClass;
+use ReflectionParameter;
 
 class ServiceProvider extends AbstractServiceProvider
 {
+
+    /**
+     * Interface mapping.
+     *
+     * @var array
+     */
+    protected $interface_mapping = [];
 
     /**
      * Define classes.
@@ -20,8 +29,7 @@ class ServiceProvider extends AbstractServiceProvider
      */
     protected function define()
     {
-        $resolver = new DependencyTreeResolver($this);
-        $resolver->resolve($this->get_root_classes());
+        $this->resolve($this->get_root_classes());
     }
 
     /**
@@ -75,6 +83,120 @@ class ServiceProvider extends AbstractServiceProvider
 
         foreach ($this->get_class_to_instantiate() as $class) {
             $this->getContainer()->get($class);
+        }
+    }
+
+    /**
+     * Bind a class to a concrete one.
+     *
+     * @param string $id class to bind.
+     * @param string $class concrete class.
+     * @param callable|null $initialize logic to initialize.
+     * @return void
+     */
+    public function bind(string $id, string $class, callable $initialize = null) {
+        $this->interface_mapping[$id] = [
+            'class' => $class,
+            'method' => $initialize,
+        ];
+    }
+
+    /**
+     * Resolve classes.
+     *
+     * @param string[] $classes root class to resolve.
+     *
+     * @throws ReflectionException
+     */
+    public function resolve(array $classes) {
+        foreach ($classes as $class) {
+            $this->resolve_class($class);
+        }
+    }
+
+    /**
+     * Resolve a class.
+     *
+     * @param string $class class to resolve.
+     *
+     * @throws ReflectionException
+     */
+    protected function resolve_class(string $class) {
+
+        if($this->getContainer()->has($class)) {
+            return;
+        }
+
+        $reflector = new ReflectionClass($class);
+
+        if( ! $reflector->isInstantiable())
+        {
+            throw new \Exception("[$class] is not instantiable");
+        }
+
+        $constructor = $reflector->getConstructor();
+
+        if(is_null($constructor))
+        {
+            $this->register_service($class);
+            return;
+        }
+
+        $parameters = $constructor->getParameters();
+        $this->register_dependencies($parameters);
+
+        $dependencies = [];
+        foreach ($parameters as $parameter) {
+            $dependency = $parameter->getClass();
+            if(is_null($dependency))
+            {
+                $name = $parameter->getName();
+                if( $this->getContainer()->has($name) ) {
+                    $dependencies[] = [
+                        'key' => $name
+                    ];
+                    continue;
+                }
+
+                $dependencies[] = [
+                    'value' => $parameter->getDefaultValue(),
+                ];
+                continue;
+            }
+
+            $dependencies[] = [
+                'key' => $dependency->getName()
+            ];
+        }
+
+        $this->register_service($class, function (DefinitionInterface $definition) use ($dependencies) {
+
+            $arguments = array_map(function ($dependency) {
+                if(key_exists('value', $dependency)) {
+                    return $dependency['value'];
+                }
+                return $this->getContainer()->get($dependency['key']);
+            }, $dependencies);
+
+            $definition->addArguments($arguments);
+        });
+    }
+
+    /**
+     * Register dependencies from a class.
+     * @param ReflectionParameter[] $parameters parameters from the class.
+     *
+     * @return void
+     * @throws ReflectionException
+     */
+    protected function register_dependencies(array $parameters) {
+        foreach ($parameters as $parameter) {
+            $dependency = $parameter->getClass();
+            if(is_null($dependency))
+            {
+                continue;
+            }
+            $this->resolve_class($dependency->name);
         }
     }
 }
