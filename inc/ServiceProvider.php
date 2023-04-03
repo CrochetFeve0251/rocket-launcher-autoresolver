@@ -132,7 +132,7 @@ class ServiceProvider extends AbstractServiceProvider
 
         if( ! $reflector->isInstantiable())
         {
-            throw new \Exception("[$class] is not instantiable");
+            throw new ReflectionException("[$class] is not instantiable");
         }
 
         $constructor = $reflector->getConstructor();
