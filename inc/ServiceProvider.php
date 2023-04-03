@@ -13,7 +13,6 @@ use ReflectionParameter;
 
 class ServiceProvider extends AbstractServiceProvider
 {
-
     /**
      * Interface mapping.
      *
@@ -91,13 +90,15 @@ class ServiceProvider extends AbstractServiceProvider
      *
      * @param string $id class to bind.
      * @param string $class concrete class.
-     * @param callable|null $initialize logic to initialize.
+     * @param callable(DefinitionInterface $definition): void |null $initialize logic to initialize.
+     * @param array $when Effective only on certain parent classes.
      * @return void
      */
-    public function bind(string $id, string $class, callable $initialize = null) {
+    public function bind(string $id, string $class, callable $initialize = null, array $when = []) {
         $this->interface_mapping[$id] = [
             'class' => $class,
             'method' => $initialize,
+            'when' => $when,
         ];
     }
 
