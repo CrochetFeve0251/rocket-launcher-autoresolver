@@ -27,6 +27,9 @@ class Test_Resolve extends TestCase
         foreach ($config['load'] as $load) {
             require_once $load;
         }
+        foreach ($config['bindings'] as $binding) {
+            $this->provider->bind($binding['id'], $binding['concrete']);
+        }
         foreach ($expected['classes'] as $class) {
             $this->container->expects()->has($class)->andReturn(false);
         }

@@ -90,14 +90,13 @@ class ServiceProvider extends AbstractServiceProvider
      *
      * @param string $id class to bind.
      * @param string $class concrete class.
-     * @param callable(DefinitionInterface $definition): void |null $initialize logic to initialize.
      * @param array $when Effective only on certain parent classes.
      * @return void
      */
-    public function bind(string $id, string $class, callable $initialize = null, array $when = []) {
-        $this->interface_mapping[$id] = [
+    public function bind(string $id, string $class, array $when = []) {
+        $this->interface_mapping[] = [
+            'id'   =>  $id,
             'class' => $class,
-            'method' => $initialize,
             'when' => $when,
         ];
     }
@@ -119,20 +118,47 @@ class ServiceProvider extends AbstractServiceProvider
      * Resolve a class.
      *
      * @param string $class class to resolve.
+     * @param string $concrete concrete class.
      *
      * @throws ReflectionException
      */
-    protected function resolve_class(string $class) {
+    protected function resolve_class(string $class, string $concrete = '') {
 
         if($this->getContainer()->has($class)) {
             return;
         }
 
-        $reflector = new ReflectionClass($class);
+        $instantiate_class = '' === $concrete ? $class : $concrete;
+
+        $reflector = new ReflectionClass($instantiate_class);
 
         if( ! $reflector->isInstantiable())
         {
-            throw new ReflectionException("[$class] is not instantiable");
+            $maps = array_filter($this->interface_mapping, function ($map) use ($class) {
+                if(count($map['when']) > 0) {
+                    return false;
+                }
+
+                if($class === $map['id']) {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if(count($maps) === 0) {
+                throw new ReflectionException("[$class] is not instantiable");
+            }
+
+            $map = array_pop($maps);
+
+            $reflector = new ReflectionClass($map['class']);
+
+            $instantiate_class = $map['class'];
+
+            if( ! $reflector->isInstantiable() ) {
+                throw new ReflectionException("[$class] is not instantiable");
+            }
         }
 
         $constructor = $reflector->getConstructor();
@@ -144,7 +170,7 @@ class ServiceProvider extends AbstractServiceProvider
         }
 
         $parameters = $constructor->getParameters();
-        $this->register_dependencies($parameters);
+        $this->register_dependencies($parameters, $instantiate_class);
 
         $dependencies = [];
         foreach ($parameters as $parameter) {
@@ -186,18 +212,51 @@ class ServiceProvider extends AbstractServiceProvider
     /**
      * Register dependencies from a class.
      * @param ReflectionParameter[] $parameters parameters from the class.
-     *
+     * @param string $parent Parent class.
      * @return void
      * @throws ReflectionException
      */
-    protected function register_dependencies(array $parameters) {
+    protected function register_dependencies(array $parameters, string $parent) {
         foreach ($parameters as $parameter) {
             $dependency = $parameter->getClass();
+
             if(is_null($dependency))
             {
                 continue;
             }
-            $this->resolve_class($dependency->name);
+
+            $concrete = $this->maybe_apply_mapping($dependency->name, $parent);
+            $this->resolve_class($dependency->name, $concrete);
         }
+    }
+
+    /**
+     * Apply binding if necessary.
+     *
+     * @param string $class Current class.
+     * @param string $parent Parent class.
+     *
+     * @return string
+     */
+    protected function maybe_apply_mapping(string $class, string $parent) {
+        $maps = array_filter($this->interface_mapping, function ($map) use ($class, $parent) {
+            if(count($map['when']) > 0 && ! in_array($parent, $map['when'])) {
+                return false;
+            }
+
+            if($class === $map['id']) {
+                return true;
+            }
+
+            return false;
+        });
+
+        if(count($maps) === 0) {
+            return $class;
+        }
+
+        $map = array_pop($maps);
+
+        return $map['class'];
     }
 }
