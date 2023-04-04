@@ -123,7 +123,6 @@ class ServiceProvider extends AbstractServiceProvider
      * @throws ReflectionException
      */
     protected function resolve_class(string $class, string $concrete = '') {
-
         if($this->getContainer()->has($class)) {
             return;
         }
@@ -165,7 +164,7 @@ class ServiceProvider extends AbstractServiceProvider
 
         if(is_null($constructor))
         {
-            $this->register_service($class);
+            $this->register_service($class, null, $concrete);
             return;
         }
 
@@ -182,6 +181,10 @@ class ServiceProvider extends AbstractServiceProvider
                     $dependencies[] = [
                         'key' => $name
                     ];
+                    continue;
+                }
+
+                if (! $parameter->isDefaultValueAvailable()) {
                     continue;
                 }
 
@@ -206,7 +209,7 @@ class ServiceProvider extends AbstractServiceProvider
             }, $dependencies);
 
             $definition->addArguments($arguments);
-        });
+        }, $instantiate_class);
     }
 
     /**

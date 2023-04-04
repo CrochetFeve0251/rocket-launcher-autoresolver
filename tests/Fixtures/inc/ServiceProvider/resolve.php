@@ -18,7 +18,10 @@ return [
           'classes' => [
                 A::class,
           ],
-          'bindings' => []
+          'bindings' => [],
+          'parameters' => [
+              'd' => 'test'
+          ]
       ],
       'expected' => [
             'classes' => [
@@ -49,6 +52,9 @@ return [
                     'id' => D::class,
                     'concrete' => E::class,
                 ]
+            ],
+            'parameters' => [
+                'd' => 'test'
             ]
         ],
         'expected' => [
