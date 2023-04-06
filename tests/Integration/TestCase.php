@@ -1,6 +1,6 @@
 <?php
 
-namespace RocketLauncherAutoresolver\Tests\Integration;
+namespace LaunchpadAutoresolver\Tests\Integration;
 
 use ReflectionObject;
 use WPMedia\PHPUnit\Unit\VirtualFilesystemTestCase;
