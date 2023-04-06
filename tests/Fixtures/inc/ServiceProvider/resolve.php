@@ -11,9 +11,9 @@ return [
   'testValidTreeShouldLoad' => [
       'config' => [
           'load' => [
-              ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/B.php',
-              ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/C.php',
-              ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/A.php',
+              LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/B.php',
+              LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/C.php',
+              LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/A.php',
           ],
           'classes' => [
                 A::class,
@@ -37,12 +37,12 @@ return [
     'testValidTreeWithBindingShouldLoad' => [
         'config' => [
             'load' => [
-                ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/B.php',
-                ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/C.php',
-                ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/A.php',
-                ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/D.php',
-                ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/E.php',
-                ROCKET_LAUNCHER_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/F.php',
+                LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/B.php',
+                LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/C.php',
+                LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/A.php',
+                LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/D.php',
+                LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/E.php',
+                LAUNCHPAD_AUTOLOADER_TESTS_FIXTURES_DIR . '/inc/classes/F.php',
             ],
             'classes' => [
                 F::class,

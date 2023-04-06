@@ -1,12 +1,12 @@
 <?php
 
-namespace RocketLauncherAutoresolver\Tests\Integration\inc\ServiceProvider;
+namespace LaunchpadAutoresolver\Tests\Integration\inc\ServiceProvider;
 
 use League\Container\Container;
 use Mockery;
 use Psr\Container\ContainerInterface;
-use RocketLauncherAutoresolver\ServiceProvider;
-use RocketLauncherAutoresolver\Tests\Unit\TestCase;
+use LaunchpadAutoresolver\ServiceProvider;
+use LaunchpadAutoresolver\Tests\Unit\TestCase;
 
 class Test_Resolve extends TestCase
 {

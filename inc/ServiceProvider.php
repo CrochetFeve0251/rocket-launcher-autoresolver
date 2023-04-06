@@ -1,13 +1,13 @@
 <?php
-namespace RocketLauncherAutoresolver;
+namespace LaunchpadAutoresolver;
 
 use League\Container\Definition\DefinitionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
-use RocketLauncherCore\Activation\HasActivatorServiceProviderInterface;
-use RocketLauncherCore\Container\AbstractServiceProvider;
-use RocketLauncherCore\Deactivation\HasDeactivatorServiceProviderInterface;
+use LaunchpadCore\Activation\HasActivatorServiceProviderInterface;
+use LaunchpadCore\Container\AbstractServiceProvider;
+use LaunchpadCore\Deactivation\HasDeactivatorServiceProviderInterface;
 use ReflectionClass;
 use ReflectionParameter;
 

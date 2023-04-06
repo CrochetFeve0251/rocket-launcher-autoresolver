@@ -1,6 +1,6 @@
 {
-  "name": "crochetfeve0251/rocket-launcher-autoresolver",
-  "description": "Builder library for psr4 plugin",
+  "name": "wp-launchpad/autoresolver",
+  "description": "Autoresolver library for Launchpad framework",
   "minimum-stability": "stable",
   "license": "proprietary",
   "type": "library",
@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "crochetfeve0251/rocket-launcher-core": "0.0.*"
+    "wp-launchpad/core": "0.0.*"
   },
   "require-dev": {
     "brain/monkey": "^2.0",
@@ -21,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "RocketLauncherAutoresolver\\": "inc/"
+      "LaunchpadAutoresolver\\": "inc/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "RocketLauncherAutoresolver\\Tests\\": "tests/"
+      "LaunchpadAutoresolver\\Tests\\": "tests/"
     }
   }
 }
