@@ -173,7 +173,9 @@ class ServiceProvider extends AbstractServiceProvider
 
         $dependencies = [];
         foreach ($parameters as $parameter) {
-            $dependency = $parameter->getClass();
+            $dependency = $parameter->getType() && !$parameter->getType()->isBuiltin()
+                ? new ReflectionClass($parameter->getType()->getName())
+                : null;
             if(is_null($dependency))
             {
                 $name = $parameter->getName();
@@ -221,7 +223,9 @@ class ServiceProvider extends AbstractServiceProvider
      */
     protected function register_dependencies(array $parameters, string $parent) {
         foreach ($parameters as $parameter) {
-            $dependency = $parameter->getClass();
+            $dependency = $parameter->getType() && !$parameter->getType()->isBuiltin()
+                ? new ReflectionClass($parameter->getType()->getName())
+                : null;
 
             if(is_null($dependency))
             {
